@@ -1374,7 +1374,7 @@ YAHOO.util.Event.onDOMReady(function () {
 						
 						//Run a search/append for each query string
 						for (j = 0; j < numOfGroupsQueries; j++) {
-							tmpUrl = twitterRequestUrl + crtGroupQueries.data[j].actual_query_string + '&lang=en';
+							tmpUrl = twitterRequestUrl + crtGroupQueries.data[j].actual_query_string + '&lang=all';
 							
 							if (crtGroupQueries.data[j].twitter_starting_point !== '' && crtGroupQueries.data[j].twitter_starting_point > 0) {
 								tmpUrl += '&since_id=' + crtGroupQueries.data[j].twitter_starting_point;
