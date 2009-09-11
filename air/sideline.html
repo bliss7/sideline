@@ -134,8 +134,16 @@ the BSD (revised) open source license. -->
 				                </td>
 				                <td>
 				                    <input id="q" name="q" type="text" />
+								</td>
+							</tr>
+							<tr>
+				                <td>
+									Show tweets <b>written in</b>
 				                </td>
-				            </tr>
+								<td>
+									<select id="s_lang" name="s_lang"><option value="all" selected="selected">Any Language</option><option value="ar">Arabic (العربية)</option><option value="da" >Danish (dansk)</option><option value="nl" >Dutch (Nederlands)</option><option value="en" >English</option><option value="fa" >Farsi / Persian (فارسی)</option><option value="fi" >Finnish (suomen kieli)</option><option value="fr" >French (français)</option><option value="de" >German (Deutsch)</option><option value="hu" >Hungarian (Magyar)</option><option value="is" >Icelandic (Íslenska)</option><option value="it" >Italian (Italiano)</option><option value="ja" >Japanese (日本語)</option><option value="no" >Norwegian (Norsk)</option><option value="pl" >Polish (polski)</option><option value="pt" >Portuguese (Português)</option><option value="ru" >Russian (русский язык)</option><option value="es" >Spanish (español)</option><option value="sv" >Swedish (Svenska)</option><option value="th" >Thai (ไทย)</option></select>
+								</td>
+							</tr>
 						</table>
 						<br />
 						<a id="show_advanced_search" href="sideline.html">Advanced Search</a>
@@ -160,6 +168,15 @@ the BSD (revised) open source license. -->
 				                </td>
 				                <td>
 				                    <input id="ands" name="ands" type="text" />
+				                </td>
+							</tr>
+				            <tr>
+				                <th></th>
+								<td>
+									Show tweets <b>written in</b>
+				                </td>
+				                <td>
+									<select class="long" id="ad_lang" name="ad_lang"><option value="all" selected="selected">Any Language</option><option value="ar">Arabic (العربية)</option><option value="da" >Danish (dansk)</option><option value="nl" >Dutch (Nederlands)</option><option value="en" >English</option><option value="fa" >Farsi / Persian (فارسی)</option><option value="fi" >Finnish (suomen kieli)</option><option value="fr" >French (français)</option><option value="de" >German (Deutsch)</option><option value="hu" >Hungarian (Magyar)</option><option value="is" >Icelandic (Íslenska)</option><option value="it" >Italian (Italiano)</option><option value="ja" >Japanese (日本語)</option><option value="no" >Norwegian (Norsk)</option><option value="pl" >Polish (polski)</option><option value="pt" >Portuguese (Português)</option><option value="ru" >Russian (русский язык)</option><option value="es" >Spanish (español)</option><option value="sv" >Swedish (Svenska)</option><option value="th" >Thai (ไทย)</option></select>
 				                </td>
 				            </tr>
 				            <tr>
@@ -293,7 +310,7 @@ the BSD (revised) open source license. -->
 		<script type="text/javascript" src="lib/yui/tabview/tabview-min.js"></script>
 		-->
 		<script type="text/javascript" src="lib/yui/sideline_yui_combo.js"></script>
-        <script type="text/javascript" src="js/sideline-min.js"></script>
+        <script type="text/javascript" src="js/sideline.js"></script>
         
         <!-- Uncomment the following lines to add introspection and source viewer.  Hit F12 to bring up the introspector. -->
         <!--

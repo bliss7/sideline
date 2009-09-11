@@ -42,8 +42,9 @@ YAHOO.util.Event.onDOMReady(function () {
 					ref    = that.processSearchDialogData(data.ref),
 					pa     = data.pa,
 					na     = data.na,
-					aq     = data.aq;
-					
+					aq     = data.aq,
+					lang   = ( q != '' ? data.s_lang : data.ad_lang ) || 'all';
+				
 				//Clean up common input errors
 				if (tag.charAt(0) === '#') {
 					tag = tag.substr(1, tag.length);
@@ -110,7 +111,8 @@ YAHOO.util.Event.onDOMReady(function () {
 										 	"ref": ref,
 										 	"pa": pa,
 										 	"na": na,
-										 	"aq": aq
+										 	"aq": aq,
+											"lang" : lang
 		 								};
 										
 					//Is this a new search term or an update for an existing one?
@@ -745,7 +747,8 @@ YAHOO.util.Event.onDOMReady(function () {
 					ref         = reversePlus(searchItem.ref),
 					pa			= searchItem.pa,
 					na			= searchItem.na,
-					aq			= searchItem.aq;
+					aq			= searchItem.aq,
+					lang		= searchItem.lang;
 					
 				YAHOO.util.Dom.get('title_of_search').value = searchTitle;
 				YAHOO.util.Dom.get('q').value = q;
@@ -769,6 +772,11 @@ YAHOO.util.Event.onDOMReady(function () {
 				if (aq === 'true') {
 					YAHOO.util.Dom.get('aq').checked = true;	
 				}
+
+				// language
+				if ( lang == '' ) { lang = 'en'; }
+				YAHOO.util.Dom.get('s_lang').value = lang;
+				YAHOO.util.Dom.get('ad_lang').value = lang;
 				
 				//Determine if we need to present the simple or advanced search form
 				//Note: simple is the default
@@ -1374,7 +1382,7 @@ YAHOO.util.Event.onDOMReady(function () {
 						
 						//Run a search/append for each query string
 						for (j = 0; j < numOfGroupsQueries; j++) {
-							tmpUrl = twitterRequestUrl + crtGroupQueries.data[j].actual_query_string + '&lang=all';
+							tmpUrl = twitterRequestUrl + crtGroupQueries.data[j].actual_query_string + '&lang=' + crtGroupQueries.data[i].lang;
 							
 							if (crtGroupQueries.data[j].twitter_starting_point !== '' && crtGroupQueries.data[j].twitter_starting_point > 0) {
 								tmpUrl += '&since_id=' + crtGroupQueries.data[j].twitter_starting_point;
@@ -1782,7 +1790,7 @@ YAHOO.util.Event.onDOMReady(function () {
 					
 					if (YAHOO.lang.isObject(grpsData) && YAHOO.lang.isArray(grpsData.searches) && grpsData.searches.length > 0) {
 						var groupName, tabLabel, newGroupResult, newGroupId, actualQueryString, searchTermData, searchItem,
-							title, q, ands, phrase, ors, nots, tag, user_from, user_to, ref, pa, na, aq;
+							title, q, ands, phrase, ors, nots, tag, user_from, user_to, ref, pa, na, aq, lang;
 						
 						//Create each new search group
 						for (var i = 0; i < grpsData.searches.length; i++) {
@@ -1807,6 +1815,7 @@ YAHOO.util.Event.onDOMReady(function () {
 									pa             = searchTermData.positive_attitude;
 									na             = searchTermData.negative_attitude;
 									aq             = searchTermData.ask_question;
+									lang             = searchTermData.lang;
 									
 									//Construct query string
 									actualQueryString = 'q='       + q +
@@ -1845,7 +1854,8 @@ YAHOO.util.Event.onDOMReady(function () {
 										ref: ref,
 										pa: pa,
 										na: na,
-										aq: aq
+										aq: aq,
+										lang: lang 
 									};
 									
 									that.addSearchItem(searchItem);
@@ -2024,7 +2034,7 @@ YAHOO.util.Event.onDOMReady(function () {
 		 */
 		getSearchItemParams : function(search_id) {
 			var sqlParameters = [ Number(search_id) ],
-				selectSQL = "SELECT id, group_id, search_title, q, ands, ors, nots, phrase, tag, user_from, user_to, ref, pa, na, aq" +
+				selectSQL = "SELECT id, group_id, search_title, q, ands, ors, nots, phrase, tag, user_from, user_to, ref, pa, na, aq, lang" +
 			 				" FROM searches WHERE id = ?",
 				searchParamResult = this.doQuery(selectSQL, sqlParameters);
 				
@@ -2150,7 +2160,7 @@ YAHOO.util.Event.onDOMReady(function () {
 		 */
 		getSidelineGroupQueries : function (sideline_group_id) {
 			var sqlParameters        = [ Number(sideline_group_id) ],
-				selectSQL            = "SELECT id, group_id, search_title, actual_query_string, q, ands, ors, nots, phrase, tag, user_from, user_to, ref, twitter_starting_point" +
+				selectSQL            = "SELECT id, group_id, search_title, actual_query_string, q, ands, ors, nots, phrase, tag, user_from, user_to, ref, twitter_starting_point, lang" +
 										" FROM searches WHERE active='Y' AND group_id = ?",
 				twitterQueryStrings  = this.doQuery(selectSQL, sqlParameters);
 				
@@ -2250,8 +2260,8 @@ YAHOO.util.Event.onDOMReady(function () {
 		addSearchItem : function (searchItemObject) {
 			var lastId,
 				sqlParameters = [],
-				insertSQL = "INSERT INTO searches (id, group_id, search_title, actual_query_string, q, ands, ors, nots, phrase, tag, user_from, user_to, ref, pa, na, aq, twitter_starting_point, active)" + 
-							" VALUES (null, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 'Y')";
+				insertSQL = "INSERT INTO searches (id, group_id, search_title, actual_query_string, q, ands, ors, nots, phrase, tag, user_from, user_to, ref, pa, na, aq, twitter_starting_point, active, lang)" + 
+							" VALUES (null, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 'Y', ?)";
 			
 			sqlParameters[sqlParameters.length]  = Number(searchItemObject.group_id);
 			sqlParameters[sqlParameters.length]  = searchItemObject.search_title;
@@ -2268,6 +2278,7 @@ YAHOO.util.Event.onDOMReady(function () {
 			sqlParameters[sqlParameters.length]  = searchItemObject.pa;
 			sqlParameters[sqlParameters.length]  = searchItemObject.na;
 			sqlParameters[sqlParameters.length]  = searchItemObject.aq;
+			sqlParameters[sqlParameters.length]  = searchItemObject.lang;
 				
 			this.doQuery(insertSQL, sqlParameters);
 			lastId = this.doQuery("SELECT last_insert_rowid() as id");
@@ -2301,7 +2312,8 @@ YAHOO.util.Event.onDOMReady(function () {
 			var sqlParameters = [],
 				updateSQL = "UPDATE searches set " +
 							"search_title = ?, actual_query_string = ?, q = ?, ands = ?, ors = ?, nots = ?, phrase = ?, " +
-							"tag = ?, user_from = ?, user_to = ?, ref = ?, pa = ?, na = ?, aq = ?, twitter_starting_point = 0" +
+							"tag = ?, user_from = ?, user_to = ?, ref = ?, pa = ?, na = ?, aq = ?, twitter_starting_point = 0, " +
+							"lang = ?" +
 							" WHERE id = ?";
 			
 			sqlParameters[sqlParameters.length]  = searchItemObject.search_title;
@@ -2318,9 +2330,20 @@ YAHOO.util.Event.onDOMReady(function () {
 			sqlParameters[sqlParameters.length]  = searchItemObject.pa;
 			sqlParameters[sqlParameters.length]  = searchItemObject.na;
 			sqlParameters[sqlParameters.length]  = searchItemObject.aq;
+			sqlParameters[sqlParameters.length]  = searchItemObject.lang;
 			sqlParameters[sqlParameters.length]  = searchId;
 				
 			this.doQuery(updateSQL, sqlParameters);
+		},
+
+		upgradeDB : function(db_version) {
+			switch( db_version ) {
+				case '1':
+					this.doQuery("ALTER table searches add lang TEXT");
+					break;
+				default :
+					break;
+			}
 		}
 	};
 	
@@ -2382,8 +2405,17 @@ YAHOO.util.Event.onDOMReady(function () {
 		
 		//Setup our SQLite database
 		chAir.db = new air.SQLConnection();
-		chAir.dbFile = air.File.applicationStorageDirectory.resolvePath("sideline_v1.db");
-		
+		chAir.dbFile = air.File.applicationStorageDirectory.resolvePath("sideline_v1.1.db");
+
+		// checking old database
+		var db_version = "1.1";
+		var old_dbFile = air.File.applicationStorageDirectory.resolvePath("sideline_v1.db");
+		if (old_dbFile.exists) {
+			old_dbFile.copyTo(chAir.dbFile,true);
+			old_dbFile.deleteFile();
+			db_version  = "1";
+		}
+
 		if (!chAir.dbFile.exists) {
 			var dbTemplate = air.File.applicationDirectory.resolvePath("sideline_base.db");
 			dbTemplate.copyTo(chAir.dbFile, true);
@@ -2392,6 +2424,7 @@ YAHOO.util.Event.onDOMReady(function () {
 		try {
 			chAir.db.open(chAir.dbFile);
 			chAir.db.compact(); //Vacuum/cleanup database for optimal performance
+			chAir.upgradeDB(db_version);
 		} catch (error) {
 			air.trace("DB error:", error.message);
 			air.trace("Details:", error.details);
